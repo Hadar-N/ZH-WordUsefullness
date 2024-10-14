@@ -1,0 +1,30 @@
+{
+  "name": "zhwordusefullness",
+  "version": "1.0.0",
+  "description": "compares Chinese words across different lists to see how useful it is for a Chinese learner",
+  "main": "main.mjs",
+  "dependencies": {
+    "chinese-conv": "^3.2.1"
+  },
+  "devDependencies": {
+    "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "start": "node main.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hadar-N/ZH-WordUsefullness.git"
+  },
+  "keywords": [
+    "Chinese",
+    "TOCFL",
+    "HSK"
+  ],
+  "author": "HadarN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hadar-N/ZH-WordUsefullness/issues"
+  },
+  "homepage": "https://github.com/Hadar-N/ZH-WordUsefullness#readme"
+}
