@@ -4,7 +4,7 @@
   "description": "compares Chinese words across different lists to see how useful it is for a Chinese learner",
   "main": "main.mjs",
   "dependencies": {
-    "chinese-conv": "^3.2.1"
+    "cjk-conv": "^1.2.149"
   },
   "devDependencies": {
     "xlsx": "^0.18.5"
