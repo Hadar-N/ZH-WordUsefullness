@@ -10,6 +10,11 @@
         "高階級: 4",
         "流利級: 5"
     ],
+    "comments": [
+        "tocfl legend level",
+        "missing words: ones with English letters/numbers etc",
+        "missing HSK/TOCFL/Freq could be due to simp/trad mismatched; rare though"
+    ],
     "list": [
         {
             "level": "入門級",

@@ -1,11 +1,12 @@
 import * as fs from 'fs';
+import { createInterface } from 'readline';
 
-const MINI_DICTIONARY_PATH = 'sources\\cedict_ts_mini.u8'
+const MINI_DICTIONARY_PATH = 'sources\\cedict_ts.u8'
 const JSON_HSK_PATH = 'sources/hsk.json'
 const JSON_TOCFL_PATH = 'sources/tocfl.json'
 const JSON_FREQ_PATH = 'sources/word_frequency.json'
 
-const EXPORT_FILE_PATH = 'sources/testres.csv'
+const EXPORT_FILE_PATH = 'sources/merged_dict.csv'
 
 const names = ['simplified', 'traditional', 'pinyin', 'meaning'];
 const FAKE_COMMAS = '，'
@@ -49,12 +50,29 @@ const combineData = (dict, map) => {
 
 const extraDataMapped = createExtraDataMap();
 
-const dictionaryData = fs.readFileSync(MINI_DICTIONARY_PATH, 'utf8');
+const outputStream = fs.createWriteStream(EXPORT_FILE_PATH, { flags: 'a' });
+const dictionaryStream = fs.createReadStream(MINI_DICTIONARY_PATH, { encoding: 'utf8' });
 
-const csv = combineData(dictionaryData, extraDataMapped)
+const rl = createInterface({
+    input: dictionaryStream,
+    crlfDelay: Infinity
+});
 
-fs.writeFile(EXPORT_FILE_PATH, csv, err => {
-    err ? console.error("ERR WRITING FILE: ", err) : console.log("done")
-})
+rl.on('line', (line) => {
+    // console.log('chunk: ', line.length, line.match(/.{15}$/))
+    const csvChunk = combineData(line, extraDataMapped);
+    outputStream.write(csvChunk); // Append each processed chunk to the CSV file
+});
 
-// TODO: streamline u8 file to save all data
+rl.on('close', () => {
+    outputStream.end();
+    console.log("Finished processing the file.");
+});
+
+outputStream.on('finish', () => {
+    console.log("CSV file has been written successfully.");
+});
+
+outputStream.on('error', (err) => {
+    console.error("Error writing to CSV:", err);
+});
