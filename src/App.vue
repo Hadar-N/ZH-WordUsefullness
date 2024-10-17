@@ -1,7 +1,3 @@
-<!-- template parts: 
- 3. data (TRAD+SIMP, meaning, hsk+tocfl+frequency)
- 4. similar words (inc. links) 
- 5. links to alternatives dictionaries/purpleChinese sample sentences? -->
 <template>
   <header>
     <div>
@@ -16,9 +12,9 @@
 
   <div id="searchbar">
     <input v-model="text" v-on:keyup.enter="searchtext">
-    <button @click="searchtext">search</button>
+    <button @click="serachdictionary">search</button>
   </div>
-  <VocabData :worddata="worddata" :isloading="isloading" />
+  <VocabData :worddata="worddata" :isloading="false" />
 </template>
 
 <script setup>
@@ -26,29 +22,21 @@ import { ref } from 'vue';
 import VocabData from './components/VocabData.vue'
 import GitHubLogo from './assets/github.png'
 import { GITHUB_LINK } from './assets/consts.js'
-import { fetchcsv } from './assets/utils.mjs'
+import { fetchcsv, findWord } from './assets/utils.mjs'
 
 const text = ref('');
-const isloading = ref(false);
+// const isloading = ref(false);
 const worddata = ref();
 const dictdata = ref();
 
 fetchcsv().then(data => dictdata.value = data)
 
-function searchtext(e) {
+async function serachdictionary(e) {
   e.preventDefault();
-  console.log(text.value);
-  serachdictionary();
-}
-
-function serachdictionary() {
-  isloading.value = true;
-  const num = Math.floor(Math.random() * 120505);
-  console.log(num, dictdata.value[num])
-  setInterval(() => {
-    worddata.value = { "please let it work": text.value }
-    isloading.value = false;
-  }, 2000);
+  // isloading.value = true;
+  const {specific, including} = findWord(dictdata.value, text.value);
+  worddata.value = specific[0];
+  // isloading.value = false;
 }
 
 </script>
@@ -78,3 +66,12 @@ header {
   }
 }
 </style>
+
+<!--
+TODO:
+- present data well on VocabData
+- present related words
+- present multiple words (tobs? )
+- add links to other dictionaries/purplechinese sample sentences
+- README.md
+-->
