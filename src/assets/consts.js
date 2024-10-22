@@ -1,4 +1,4 @@
-export const GITHUB_LINK = "https://github.com/Hadar-N/zh-word-usefullness";
+export const GITHUB_LINK = "https://github.com/Hadar-N/lexitier-zh";
 export const REPLACED_CHARS = [[",","，"],[`"`,`'`]];
 export const MAX_RELATED = 10;
 export const TOTAL_FREQUENCY_ENTRIES = 99122;

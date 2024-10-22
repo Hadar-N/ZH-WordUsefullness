@@ -2,7 +2,7 @@
   <header>
     <div>
       <h1>LexiTier Chinese</h1>
-      <h5>version: 0.1</h5>
+      <h5>version: 1.0.0</h5>
     </div>
     <div>
       <a :href="GITHUB_LINK" target="_blank"><img alt="github" class="logo" :src="GitHubLogo" width="15"
