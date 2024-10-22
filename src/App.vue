@@ -11,15 +11,19 @@
   </header>
 
   <div id="searchbar">
-    <input v-model="text" v-on:keyup.enter="searchtext">
+    <input v-model="text" v-on:keyup.enter="serachdictionary">
     <button @click="serachdictionary">search</button>
   </div>
   <VocabData :worddata="worddata" :isloading="false" />
+  <br />
+  <VocabRelated title="Related Variants" :words="variantsrelated"/>
+  <VocabRelated title="Related Vocabulary" :words="wordrelated"/>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import VocabData from './components/VocabData.vue'
+import VocabRelated from './components/VocabRelated.vue'
 import GitHubLogo from './assets/github.png'
 import { GITHUB_LINK } from './assets/consts.js'
 import { fetchcsv, findWord } from './assets/utils.mjs'
@@ -27,6 +31,8 @@ import { fetchcsv, findWord } from './assets/utils.mjs'
 const text = ref('');
 // const isloading = ref(false);
 const worddata = ref();
+const wordrelated = ref([]);
+const variantsrelated = ref([]);
 const dictdata = ref();
 
 fetchcsv().then(data => dictdata.value = data)
@@ -34,8 +40,13 @@ fetchcsv().then(data => dictdata.value = data)
 async function serachdictionary(e) {
   e.preventDefault();
   // isloading.value = true;
-  const {specific, including} = findWord(dictdata.value, text.value);
-  worddata.value = specific[0];
+  let res = {};
+  if (text.value){
+    res = findWord(dictdata.value, text.value);
+  }
+  worddata.value = res.specific?.[0] || {};
+  wordrelated.value = res.including || [];
+  variantsrelated.value = res.variants || [];
   // isloading.value = false;
 }
 
@@ -69,9 +80,7 @@ header {
 
 <!--
 TODO:
-- present data well on VocabData
-- present related words
-- present multiple words (tobs? )
+- present multiple words (tabs? )
 - add links to other dictionaries/purplechinese sample sentences
 - README.md
 -->
