@@ -38,7 +38,7 @@ const calcimportance = (word) => {
     return(freq+hsk+tocfl)
 }
 
-export const findWord = (dict,text) => {
+const chinesefindword = (dict,text) => {
     const {re_complete, re_includes} = createregexps(text);
     let specific = [];
     let variants = [];
@@ -54,4 +54,20 @@ export const findWord = (dict,text) => {
     }
     including = including.sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1).slice(0, MAX_RELATED);
     return({specific, including, variants});
+}
+
+const englishfindword = (dict,text) => {
+    const re_word = new RegExp(`^(?:.* /?)?${text.toLowerCase()}(?:/? .*)$`);
+    let relevant = dict.filter(w => {
+        if (w.meaning.toLowerCase().match(re_word)) return true;
+        return false;
+    }).sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1);
+    relevant = relevant.slice(0, MAX_RELATED*2);
+    // const res = chinesefindword(dict,relevant[0].traditional) // error: finds irrelevant words with the same simp
+    return({specific: relevant});
+}
+
+export const findWord = (dict,text) => {
+    const res = (text.match(/^[a-zA-Z]/)) ? englishfindword(dict,text) : chinesefindword(dict,text);
+    return res
 }

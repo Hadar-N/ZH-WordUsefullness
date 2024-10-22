@@ -27,7 +27,7 @@ The data in `merged_dict.csv` can be traced back to the original resources below
 - HSK list: "complete-hsk-vocabulary" by Dr.Kameleon, Oct 2023 ([link](https://github.com/drkameleon/complete-hsk-vocabulary))
 => merged_dict: "hsk2" & "hsk3" columns
 - TOCFL list: "Vocabulary List Traditional Characters: Vokabelliste" by Taipei Economic and Cultural Office in Austria, 2020 ([link](https://www.roc-taiwan.org/at_de/post/634.html))
-=> merged_dict: "tocfl" column'\
+=> merged_dict: "tocfl" column'
 - Frequency list: "SUBTLEX-CH: Chinese word and character frequencies based on film subtitles" by Cai, Q., & Brysbaert, M., 2010 ([link](https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexch))
 => merged_dict: "frequency" column
 
