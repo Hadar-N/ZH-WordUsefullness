@@ -1,3 +1,5 @@
 node_modules
 origin_files
 sources
+public/*.csv
+!public/merged_dict.csv

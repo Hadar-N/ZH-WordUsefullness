@@ -17,6 +17,7 @@
   <VocabTabs :words="wordlist" :active="currview" @changeIndex="changeIndex"/>
   <VocabData :worddata="wordlist[currview]" :isloading="false" />
   <br />
+  <VocabRelated title="Word Breakdown" :words="breakdown"/>
   <VocabRelated title="Related Variants" :words="variantsrelated"/>
   <VocabRelated title="Related Vocabulary" :words="wordrelated"/>
 </template>
@@ -36,6 +37,7 @@ const currview = ref(0)
 const wordlist = ref([]);
 const wordrelated = ref([]);
 const variantsrelated = ref([]);
+const breakdown = ref([]);
 
 fetchcsv().then(data => dictdata.value = data)
 
@@ -49,6 +51,7 @@ function serachdictionary(e) {
   currview.value = 0;
   wordrelated.value = res.including || [];
   variantsrelated.value = res.variants || [];
+  breakdown.value = res.chars || [];
 }
 
 function changeIndex(data) {

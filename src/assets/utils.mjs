@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import { tw2cn, cn2tw } from 'cjk-conv';
-import { TOTAL_FREQUENCY_ENTRIES, TOCFL_LEVEL_MAP, MAX_RELATED } from './consts'
+import { TOTAL_FREQUENCY_ENTRIES, TOCFL_LEVEL_MAP, MAX_RELATED, REPLACED_CHARS } from './consts'
 
 export const fetchcsv = async () => {
     const parseFile = (path) => {
@@ -28,7 +28,7 @@ const createregexps = (text) => {
         if (char_s === char_t) res += char_t;
         else res+= `[${char_s}${char_t}]`;
     }
-    return {re_complete: new RegExp(`^${res}$`), re_includes: new RegExp(`.*${res}.*`)};
+    return {re_complete: new RegExp(`^${res}$`), re_includes: new RegExp(`.*${res}.*`), re_chars: new RegExp(`^[${text}]$`)};
 }
 
 const calcimportance = (word) => {
@@ -39,21 +39,28 @@ const calcimportance = (word) => {
 }
 
 const chinesefindword = (dict,text) => {
-    const {re_complete, re_includes} = createregexps(text);
-    let specific = [];
-    let variants = [];
-    let including = dict.filter(w => {
-        if (w.simplified.match(re_complete) || w.traditional.match(re_complete)) specific.push(w)
-        else if (w.simplified.match(re_includes) || w.traditional.match(re_includes)) return true;
-        return false;
+    const {re_complete, re_includes, re_chars} = createregexps(text);
+    const re_varients = /^((old )?variant|surname).*/
+    let specific = [], variants = [], chars = [], including = [];
+    dict.forEach(w => {
+        if (w.simplified.match(re_complete) || w.traditional.match(re_complete)) specific.push(w);
+        else if (w.simplified.match(re_chars) || w.traditional.match(re_chars)) chars.push(w)
+        else if (w.simplified.match(re_includes) || w.traditional.match(re_includes)) including.push(w);
     })
+    including = including.sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1).slice(0, MAX_RELATED);
     if(specific.length > 1) {
-        const re_varients = /^(old )?variant.*/
         variants = specific.filter(i => i.meaning.match(re_varients));
         specific = specific.filter(i => !i.meaning.match(re_varients));
     }
-    including = including.sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1).slice(0, MAX_RELATED);
-    return({specific, including, variants});
+    let chars_in_order = [], temp;
+    Array.from(text).forEach(c => {
+        temp = chars.filter(i => i.simplified === c || i.traditional === c);
+        if (temp.length > 1) {
+            temp.filter(i => !i.meaning.match(re_varients))
+        }
+        chars_in_order.push(...temp);
+    })
+    return({specific, including, variants, chars: chars_in_order});
 }
 
 const englishfindword = (dict,text) => {
@@ -70,4 +77,8 @@ const englishfindword = (dict,text) => {
 export const findWord = (dict,text) => {
     const res = (text.match(/^[a-zA-Z]/)) ? englishfindword(dict,text) : chinesefindword(dict,text);
     return res
+}
+
+export const fixDef = (str) => {
+    return REPLACED_CHARS.reduce((acc, i) => acc.replaceAll(i[1], i[0]), str)
 }

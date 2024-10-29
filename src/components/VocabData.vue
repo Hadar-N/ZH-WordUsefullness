@@ -7,7 +7,7 @@
         <div id="worddata">
             <div class="mainword">{{ worddata.traditional }}<span v-if="worddata.traditional !== worddata.simplified"> / {{ worddata.simplified }}</span></div>
             <div class="pinyin">{{ worddata.pinyin }}</div>
-            <div class="meaning">{{ worddata.meaning }}</div>
+            <div class="meaning">{{ fixDef(worddata.meaning) }}</div>
         </div>
         <br />
         <table id="wordextra">
@@ -37,6 +37,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { TOCFL_LEVEL_MAP } from '../assets/consts.js'
+import { fixDef } from '../assets/utils.mjs'
 
 const props = defineProps({
     worddata: Object,
