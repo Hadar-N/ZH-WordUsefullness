@@ -2,6 +2,7 @@
   "name": "zhwordusefullness",
   "version": "1.0.0",
   "description": "compares Chinese words across different lists to see how useful it is for a Chinese learner",
+  "type": "module",
   "scripts": {
     "startnode": "node main.mjs",
     "dev": "vite",
@@ -14,6 +15,7 @@
   },
   "keywords": [
     "Chinese",
+    "Mandarin",
     "TOCFL",
     "HSK"
   ],
@@ -26,7 +28,9 @@
   "dependencies": {
     "cjk-conv": "^1.2.149",
     "papaparse": "^5.4.1",
-    "vue": "^3.5.12"
+    "vue": "^3.5.12",
+    "vue-router": "^4.4.5",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

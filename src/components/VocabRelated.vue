@@ -1,7 +1,7 @@
 <template>
-    <span class="title" v-if="props.words && props.words.length>0">{{ props.title }}:</span>
+    <span class="title" v-if="store.state.founddata?.[props.property_name] && store.state.founddata?.[props.property_name].length>0">{{ props.title }}:</span>
     <ul class="relatedtable">
-    <li class="relateddata" v-for="w of props.words" :key="w.traditional">
+    <li class="relateddata" v-for="w of store.state.founddata?.[props.property_name]" :key="w.traditional">
       <div>{{ w.traditional }} / {{ w. simplified }}</div>
       <div>{{ fixDef(w.meaning) }}</div>
       <div>
@@ -15,15 +15,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
 import { fixDef } from '../assets/utils.mjs'
+import { useStore } from 'vuex';
+
+const store = useStore()
 
 defineOptions({
   inheritAttrs: false
 })
 const props = defineProps({
-  words: Array,
-  title: String
+  title: String,
+  property_name: String
 })
 </script>
 

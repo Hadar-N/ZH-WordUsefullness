@@ -1,13 +1,14 @@
 <template>
-    <div v-if="props.isloading">
+    <!-- <div v-if="props.isloading">
         <h3>loading...</h3>
     </div>
-    <div v-else-if="isWordFound">
+    <div v-else-if="isWordFound"> -->
+    <div v-if="isWordFound">
         <br />
         <div id="worddata">
-            <div class="mainword">{{ worddata.traditional }}<span v-if="worddata.traditional !== worddata.simplified"> / {{ worddata.simplified }}</span></div>
-            <div class="pinyin">{{ worddata.pinyin }}</div>
-            <div class="meaning">{{ fixDef(worddata.meaning) }}</div>
+            <div class="mainword">{{ store.getters.getCurrWord.traditional }}<span v-if="store.getters.getCurrWord.traditional !== store.getters.getCurrWord.simplified"> / {{ store.getters.getCurrWord.simplified }}</span></div>
+            <div class="pinyin">{{ store.getters.getCurrWord.pinyin }}</div>
+            <div class="meaning">{{ fixDef(store.getters.getCurrWord.meaning) }}</div>
         </div>
         <br />
         <table id="wordextra">
@@ -18,13 +19,13 @@
                     <th>TOCFL Level</th>
                 </tr>
                 <tr>
-                    <td><span v-if="worddata.frequency">{{ worddata.frequency }}</span></td>
+                    <td><span v-if="store.getters.getCurrWord.frequency">{{ store.getters.getCurrWord.frequency }}</span></td>
                     <td>
-                        <span v-if="worddata.hsk2">HSK2.0: {{ worddata.hsk2 }} <br /></span>
-                        <span v-if="worddata.hsk3">HSK3.0: {{ worddata.hsk3 }}</span>
+                        <span v-if="store.getters.getCurrWord.hsk2">HSK2.0: {{ store.getters.getCurrWord.hsk2 }} <br /></span>
+                        <span v-if="store.getters.getCurrWord.hsk3">HSK3.0: {{ store.getters.getCurrWord.hsk3 }}</span>
                         
                     </td>
-                    <td><span v-if="worddata.tocfl">{{ worddata.tocfl }}({{ TOCFL_LEVEL_MAP[worddata.tocfl] }})</span></td>
+                    <td><span v-if="store.getters.getCurrWord.tocfl">{{ store.getters.getCurrWord.tocfl }}({{ TOCFL_LEVEL_MAP[store.getters.getCurrWord.tocfl] }})</span></td>
                 </tr>
             </tbody>
         </table>
@@ -35,16 +36,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { TOCFL_LEVEL_MAP } from '../assets/consts.js'
 import { fixDef } from '../assets/utils.mjs'
+import { useStore } from 'vuex';
 
-const props = defineProps({
-    worddata: Object,
-    isloading: Boolean
-})
+const store = useStore()
 
-const isWordFound = computed(() => props.worddata && props.worddata?.simplified)
+const isWordFound = computed(() => store.getters.getCurrWord && store.getters.getCurrWord?.simplified);
 
 </script>
 
