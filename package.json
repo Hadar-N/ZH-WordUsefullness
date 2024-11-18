@@ -1,6 +1,6 @@
 {
   "name": "zhwordusefullness",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "compares Chinese words across different lists to see how useful it is for a Chinese learner",
   "type": "module",
   "scripts": {

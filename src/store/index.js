@@ -10,10 +10,12 @@ export default createStore({
   modules: {},
   actions: {
     fetchDictionary (context) {
-        fetchcsv().then(data => context.commit('setDictionary', data))
+      return new Promise((resolve, reject) => {
+        fetchcsv().then(data => context.commit('setDictionary', data)).then(resolve);
+        //TODO: add reject action
+      })
     },
     searchInDict(context, word) {
-      // TODO: make into promise?
         let res = {};
         if (word){
             res = findWord(context.state.dictionary, word);
@@ -41,6 +43,9 @@ export default createStore({
   getters: {
     getCurrWord (state) {
       return state.founddata.specific?.[state.currview];
+    },
+    isDictionaryLoaded (state) {
+      return state.dictionary && state.dictionary.length;
     }
   }
 });

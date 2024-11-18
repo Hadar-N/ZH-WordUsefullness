@@ -2,7 +2,7 @@
   <header>
     <div>
       <h1>LexiTier Chinese</h1>
-      <h5>version: 1.0.0</h5>
+      <h5>version: 1.1.0</h5>
     </div>
     <div>
       <a :href="GITHUB_LINK" target="_blank"><img alt="github" class="logo" :src="GitHubLogo" width="15"
@@ -18,9 +18,6 @@
 import SearchBar from './components/SearchBar.vue';
 import GitHubLogo from './assets/github.png'
 import { GITHUB_LINK } from './assets/consts.js'
-import { useStore } from 'vuex';
-const store = useStore()
-store.dispatch('fetchDictionary');
 
 </script>
 

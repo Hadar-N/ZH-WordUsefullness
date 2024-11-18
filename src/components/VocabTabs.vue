@@ -1,6 +1,6 @@
 <template>
     <div id="tabscont">
-        <div class="tab" v-for="(w, i) of $store.state.founddata.specific" @click="changeIndex" :index="i" :class="{active: $store.state.currview === i}">{{ w.traditional }}<span v-if="w.traditional !== w.simplified"> / {{ w.simplified }}</span></div>
+        <div class="tab" v-for="(w, i) of $store.state.founddata.specific" @click="changeIndex" :index="i" :class="{active: $store.state.currview == i}">{{ w.traditional }}<span v-if="w.traditional !== w.simplified"> / {{ w.simplified }}</span></div>
     </div>
 </template>
 
@@ -8,9 +8,6 @@
 export default {
     methods: {
         changeIndex(e) {
-            // TODO: Fix active class
-            // let i = e.currentTarget.getAttribute('index');
-            // console.log({if: this.$store.state.currview === i,currview: this.$store.state.currview,i})
             this.$store.dispatch('updateViewedIndex', e.currentTarget.getAttribute('index'))
         }
     }
