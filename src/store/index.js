@@ -42,7 +42,7 @@ export default createStore({
   },
   getters: {
     getCurrWord (state) {
-      return state.founddata.specific?.[state.currview];
+      return state.founddata?.[state.currview];
     },
     isDictionaryLoaded (state) {
       return state.dictionary && state.dictionary.length;

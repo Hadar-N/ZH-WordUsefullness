@@ -1,6 +1,6 @@
 <template>
     <div id="tabscont">
-        <div class="tab" v-for="(w, i) of $store.state.founddata.specific" @click="changeIndex" :index="i" :class="{active: $store.state.currview == i}">{{ w.traditional }}<span v-if="w.traditional !== w.simplified"> / {{ w.simplified }}</span></div>
+        <div class="tab" v-for="(w, i) of tabnames" @click="changeIndex" :index="i" :class="{active: $store.state.currview == i}">{{ w.traditional }}<span v-if="w.traditional !== w.simplified"> / {{ w.simplified }}</span></div>
     </div>
 </template>
 
@@ -9,6 +9,11 @@ export default {
     methods: {
         changeIndex(e) {
             this.$store.dispatch('updateViewedIndex', e.currentTarget.getAttribute('index'))
+        }
+    },
+    computed: {
+        tabnames() {
+            return this.$store.state.founddata?.map(i => Object.values(i.specific)[0])
         }
     }
 }

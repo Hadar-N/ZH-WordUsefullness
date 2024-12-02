@@ -1,14 +1,18 @@
 <template>
+  <span v-if="isWordFound" >
   <VocabTabs />
   <VocabData />
   <br />
-  <VocabRelated title="Word Breakdown" property_name="chars" />
-  <VocabRelated title="Related Variants" property_name="variants" />
-  <VocabRelated title="Related Vocabulary" property_name="including" />
+  <VocabRelated title="Word Breakdown" :isallowlink="false" property_name="chars" />
+  <VocabRelated title="Related Variants" :isallowlink="false" property_name="variants" />
+  <VocabRelated title="Related Vocabulary" :isallowlink="true" property_name="including" />
+</span><span v-else>
+        <h3>no word</h3>
+    </span v-else>
 </template>
 
 <script setup>
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
 import VocabTabs from './VocabTabs.vue'
 import VocabData from './VocabData.vue'
 import VocabRelated from './VocabRelated.vue'
@@ -26,6 +30,7 @@ watch(() => route.query.word,
     store.dispatch('searchInDict', word)
   }, { immediate: true }
 )
+const isWordFound = computed(() => store.getters.getCurrWord && Object.keys(store.getters.getCurrWord.specific).length > 0);
 
 </script>
 
