@@ -16,6 +16,59 @@ a:hover {
 }
 
 
+
+.vocab-disp{
+  display: grid;
+  grid-template-columns: 105px 1fr;
+}
+
+.tabscont {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  width: 100px;
+  justify-content: stretch;
+  row-gap: 5px;
+
+  overflow: hidden;
+  transition: width 1s;
+}
+.tabscont:after {
+  content: "";
+  flex: 99999 1 auto;
+}
+.tabscont:hover {
+  width: 500px;
+}
+
+.tabborder {
+  border: 1px solid darkgray;
+  border-radius: 5px 5px 0 0;
+  width: inherit;
+  background-color: white;
+}
+.tabborder:hover {
+  background-color: gray;
+}
+.active {
+  background-color:lightgray;
+}
+
+.tab {
+  width: 500px;
+  flex-grow: 1;
+  padding: 2px 10px;
+  cursor: pointer;
+  text-align: center;
+
+  display: grid;
+  grid-template-columns: 80px minmax(0,1fr) 80px;
+}
+.onopen {
+  padding: 0 5px;
+}
+
 /*
 @media (hover: hover) {
   a:hover {

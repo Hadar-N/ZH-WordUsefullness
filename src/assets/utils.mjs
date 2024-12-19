@@ -31,7 +31,7 @@ const createregexps = (text) => {
     return {re_complete: new RegExp(`^${res}$`), re_includes: new RegExp(`.*${res}.*`), re_chars: new RegExp(`^[${text}]$`)};
 }
 
-const calcimportance = (word) => {
+export const calcimportance = (word) => {
     const freq = (Number(word.frequency) || TOTAL_FREQUENCY_ENTRIES)/TOTAL_FREQUENCY_ENTRIES;
     const hsk = !word.hsk2 && !word.hsk3 ? 1 : (Number(word.hsk2 || 7) + Number(word.hsk3 == "7+" ? 7 : (word.hsk3 || 10)))/(7+10);
     const tocfl = (TOCFL_LEVEL_MAP[word.tocfl] || 6)/6;

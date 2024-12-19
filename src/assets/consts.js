@@ -9,3 +9,9 @@ export const TOCFL_LEVEL_MAP = {
     "高階級": 4,
     "流利級": 5
 }
+export const FETCH_DATA_STATUSES = {
+    "PRE": "PRE",
+    "ONGOING": "ONGOING",
+    "SUCCESS": "SUCCESS",
+    "FAILED": "FAILED",
+}

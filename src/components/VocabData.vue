@@ -1,8 +1,4 @@
 <template>
-    <!-- <div v-if="props.isloading">
-        <h3>loading...</h3>
-    </div>
-    <div v-else-if="isWordFound"> -->
     <div v-for="v of Object.values(store.getters.getCurrWord.specific)">
         <br />
         <div id="worddata">

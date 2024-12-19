@@ -9,7 +9,18 @@
 export default {
     data() {
         return {
-            text: ''
+            text: "",
+            isinitial: true
+        }
+    },
+    watch: {
+        '$route.query': {
+            handler(newQuery) {
+                if(this.isinitial) {
+                    this.text = newQuery?.word || "";
+                }
+                this.isinitial = false;
+            }, immediate: false
         }
     },
     methods: {
