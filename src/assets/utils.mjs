@@ -2,6 +2,9 @@ import Papa from 'papaparse';
 import { tw2cn, cn2tw } from 'cjk-conv';
 import { TOTAL_FREQUENCY_ENTRIES, TOCFL_LEVEL_MAP, MAX_RELATED, REPLACED_CHARS } from './consts'
 
+const re_varients = /^((old )?variant|surname).*/
+const re_zhletters = /\p{Script=Han}/u
+
 export const fetchcsv = async () => {
     const parseFile = (path) => {
         return new Promise(resolve => {
@@ -28,7 +31,10 @@ const createregexps = (text) => {
         if (char_s === char_t) res += char_t;
         else res+= `[${char_s}${char_t}]`;
     }
-    return {re_complete: new RegExp(`^${res}$`), re_includes: new RegExp(`.*${res}.*`), re_chars: new RegExp(`^[${text}]$`)};
+
+    let re_includes= new RegExp(`(?=[\\u4E00-\\u9FFF]*${res})[\\u4E00-\\u9FFF]{${text.length+1},}`)
+    
+    return {re_complete: new RegExp(`^${res}$`), re_includes};
 }
 
 export const calcimportance = (word) => {
@@ -38,30 +44,62 @@ export const calcimportance = (word) => {
     return(freq+hsk+tocfl)
 }
 
-const chinesefindword = (dict,text) => {
-    const {re_complete, re_includes, re_chars} = createregexps(text);
-    const re_varients = /^((old )?variant|surname).*/
-    let specific = [], variants = [], chars = [], including = [];
-    dict.forEach(w => {
-        if (w.simplified.match(re_complete) || w.traditional.match(re_complete)) specific.push(w);
-        else if (w.simplified.match(re_chars) || w.traditional.match(re_chars)) chars.push(w)
-        else if (w.simplified.match(re_includes) || w.traditional.match(re_includes)) including.push(w);
-    })
-    including = including.sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1).slice(0, MAX_RELATED);
-    if(specific.length > 1) {
-        variants = specific.filter(i => i.meaning.match(re_varients));
-        specific = specific.filter(i => !i.meaning.match(re_varients));
-    }
-    let specific_obj = reorgspecific(specific);
-    let chars_in_order = [], temp;
-    Array.from(text).forEach(c => {
-        temp = chars.filter(i => i.simplified === c || i.traditional === c);
-        if (temp.length > 1) {
-            temp.filter(i => !i.meaning.match(re_varients))
+const chinesefindwords = (dict, sentence) => {
+    let result = [];
+    let curr_stack = ''
+
+    let temp_chars = [];
+    let temp_word = [];
+
+    let setVars = (new_chars, new_stack) => {
+        if(temp_word.length) {
+            const {re_includes} = createregexps(curr_stack);
+            const including = searchReInDict(dict, re_includes).sort((a,b)=> calcimportance(a) > calcimportance(b) ? 1 : -1).slice(0, MAX_RELATED);
+
+            result.push({
+                chars: temp_chars.filter(w => w.simplified !== curr_stack && w.traditional !== curr_stack),
+                including,
+                specific: reorgspecific(temp_word),
+                variants: [] //TODO
+            })
         }
-        chars_in_order.push(...temp);
+        curr_stack = new_stack;
+        temp_chars = new_chars;
+        temp_word = new_chars;
+    }
+
+    for (let ch of sentence) {
+        if (ch.match(re_zhletters)) {
+
+            const {re_complete : re_comp_char} = createregexps(ch);
+            const {re_complete : re_comp_stack} = createregexps(curr_stack + ch);
+
+            let chars = searchReInDict(dict, re_comp_char);
+            let words = curr_stack ? searchReInDict(dict, re_comp_stack) : chars;
+        
+            if (words.length) {
+                temp_chars.push(...chars);
+                curr_stack+=ch;
+                temp_word = words;
+            } else {
+                setVars(chars, ch)
+            }
+        } else {
+            setVars([], '')
+        }
+    }
+
+    setVars([], '')
+
+    return result
+}
+
+const searchReInDict = (dict, re) => {
+    let res= []
+    dict.forEach(w => {
+        if (w.simplified.match(re) || w.traditional.match(re)) res.push(w);
     })
-    return({specific : specific_obj, including, variants, chars: chars_in_order});
+    return res;
 }
 
 const reorgspecific = arr => {
@@ -93,7 +131,7 @@ const englishfindword = (dict,text) => {
 }
 
 export const findWord = (dict,text) => {
-    const res = (text.match(/^[a-zA-Z]/)) ? englishfindword(dict,text) : text.split(' ').filter(w => w.trim()).map(w => chinesefindword(dict, w.trim()));
+    const res = (text.match(/^[a-zA-Z]/)) ? englishfindword(dict,text) : chinesefindwords(dict, text.trim());
     return res
 }
 
